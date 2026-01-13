@@ -10,6 +10,7 @@
         "@payloadcms/live-preview-react": "^3.71.1",
         "@payloadcms/next": "3.70.0",
         "@payloadcms/plugin-ecommerce": "^3.71.1",
+        "@payloadcms/plugin-form-builder": "^3.71.1",
         "@payloadcms/plugin-seo": "^3.70.0",
         "@payloadcms/richtext-lexical": "3.70.0",
         "@payloadcms/ui": "3.70.0",
@@ -393,6 +394,8 @@
     "@payloadcms/next": ["@payloadcms/next@3.70.0", "", { "dependencies": { "@dnd-kit/core": "6.3.1", "@dnd-kit/modifiers": "9.0.0", "@dnd-kit/sortable": "10.0.0", "@payloadcms/graphql": "3.70.0", "@payloadcms/translations": "3.70.0", "@payloadcms/ui": "3.70.0", "busboy": "^1.6.0", "dequal": "2.0.3", "file-type": "19.3.0", "graphql-http": "^1.22.0", "graphql-playground-html": "1.6.30", "http-status": "2.1.0", "path-to-regexp": "6.3.0", "qs-esm": "7.0.2", "sass": "1.77.4", "uuid": "10.0.0" }, "peerDependencies": { "graphql": "^16.8.1", "next": "^15.4.10", "payload": "3.70.0" } }, "sha512-/PivHLH3FJWKc7rQhO2JQsx7lqdR6LaCUPkUa83D6lZjZmAnhCl66u9YHoZTVAMjWtjsTXHQSZEvGFNRsmZVhw=="],
 
     "@payloadcms/plugin-ecommerce": ["@payloadcms/plugin-ecommerce@3.71.1", "", { "dependencies": { "@payloadcms/translations": "3.71.1", "@payloadcms/ui": "3.71.1", "qs-esm": "7.0.2" }, "peerDependencies": { "payload": "3.71.1", "react": "^19.0.1 || ^19.1.2 || ^19.2.1", "react-dom": "^19.0.1 || ^19.1.2 || ^19.2.1" } }, "sha512-dX2QquaHxUMi+/OKd/OHyKA9M0qjrru512s5Xy1wP46ziLiabvAtquC9sqMZBQzVc+1WjlcWaH63a8jWaifqKQ=="],
+
+    "@payloadcms/plugin-form-builder": ["@payloadcms/plugin-form-builder@3.71.1", "", { "dependencies": { "@payloadcms/ui": "3.71.1", "escape-html": "^1.0.3" }, "peerDependencies": { "payload": "3.71.1", "react": "^19.0.1 || ^19.1.2 || ^19.2.1", "react-dom": "^19.0.1 || ^19.1.2 || ^19.2.1" } }, "sha512-fcavEZh6mJlWxSu2xc8WK7HPDDFqWKsVOreBP/unRKd+PZT3bXP9ZHrnfcbKkBEmNCjIcT6usLnxChtc3WtZsA=="],
 
     "@payloadcms/plugin-seo": ["@payloadcms/plugin-seo@3.70.0", "", { "dependencies": { "@payloadcms/translations": "3.70.0", "@payloadcms/ui": "3.70.0" }, "peerDependencies": { "payload": "3.70.0", "react": "^19.0.1 || ^19.1.2 || ^19.2.1", "react-dom": "^19.0.1 || ^19.1.2 || ^19.2.1" } }, "sha512-NUb7EwQoegzDgmYacyIxOt+OfrL/pzeYAY4r2lNNQ04t8iJmoIhDYhcRjjFxVkL/RXfNwP9f526ieK/KrdasrA=="],
 
@@ -1514,6 +1517,8 @@
 
     "@payloadcms/plugin-ecommerce/@payloadcms/ui": ["@payloadcms/ui@3.71.1", "", { "dependencies": { "@date-fns/tz": "1.2.0", "@dnd-kit/core": "6.3.1", "@dnd-kit/sortable": "10.0.0", "@dnd-kit/utilities": "3.2.2", "@faceless-ui/modal": "3.0.0", "@faceless-ui/scroll-info": "2.0.0", "@faceless-ui/window-info": "3.0.1", "@monaco-editor/react": "4.7.0", "@payloadcms/translations": "3.71.1", "bson-objectid": "2.0.4", "date-fns": "4.1.0", "dequal": "2.0.3", "md5": "2.3.0", "object-to-formdata": "4.5.1", "qs-esm": "7.0.2", "react-datepicker": "7.6.0", "react-image-crop": "10.1.8", "react-select": "5.9.0", "scheduler": "0.25.0", "sonner": "^1.7.2", "ts-essentials": "10.0.3", "use-context-selector": "2.0.0", "uuid": "10.0.0" }, "peerDependencies": { "next": "^15.2.8 || ^15.3.8 || ^15.4.10 || ^15.5.9", "payload": "3.71.1", "react": "^19.0.1 || ^19.1.2 || ^19.2.1", "react-dom": "^19.0.1 || ^19.1.2 || ^19.2.1" } }, "sha512-m/y9Xde6/8Dh+gjBPSj1UPrSxAo/fJlgZZwC4xZPcncohhcjINwMtpU1o2NaSqvSp2Z6IwrwVVuCGsWmA+OGUQ=="],
 
+    "@payloadcms/plugin-form-builder/@payloadcms/ui": ["@payloadcms/ui@3.71.1", "", { "dependencies": { "@date-fns/tz": "1.2.0", "@dnd-kit/core": "6.3.1", "@dnd-kit/sortable": "10.0.0", "@dnd-kit/utilities": "3.2.2", "@faceless-ui/modal": "3.0.0", "@faceless-ui/scroll-info": "2.0.0", "@faceless-ui/window-info": "3.0.1", "@monaco-editor/react": "4.7.0", "@payloadcms/translations": "3.71.1", "bson-objectid": "2.0.4", "date-fns": "4.1.0", "dequal": "2.0.3", "md5": "2.3.0", "object-to-formdata": "4.5.1", "qs-esm": "7.0.2", "react-datepicker": "7.6.0", "react-image-crop": "10.1.8", "react-select": "5.9.0", "scheduler": "0.25.0", "sonner": "^1.7.2", "ts-essentials": "10.0.3", "use-context-selector": "2.0.0", "uuid": "10.0.0" }, "peerDependencies": { "next": "^15.2.8 || ^15.3.8 || ^15.4.10 || ^15.5.9", "payload": "3.71.1", "react": "^19.0.1 || ^19.1.2 || ^19.2.1", "react-dom": "^19.0.1 || ^19.1.2 || ^19.2.1" } }, "sha512-m/y9Xde6/8Dh+gjBPSj1UPrSxAo/fJlgZZwC4xZPcncohhcjINwMtpU1o2NaSqvSp2Z6IwrwVVuCGsWmA+OGUQ=="],
+
     "@payloadcms/richtext-lexical/csstype": ["csstype@3.1.3", "", {}, "sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw=="],
 
     "@payloadcms/ui/sonner": ["sonner@1.7.4", "", { "peerDependencies": { "react": "^18.0.0 || ^19.0.0 || ^19.0.0-rc", "react-dom": "^18.0.0 || ^19.0.0 || ^19.0.0-rc" } }, "sha512-DIS8z4PfJRbIyfVFDVnK9rO3eYDtse4Omcm6bt0oEr5/jtLgysmjuBl1frJ9E/EQZrFmKx2A8m/s5s9CRXIzhw=="],
@@ -1627,6 +1632,10 @@
     "@payloadcms/graphql/tsx/fsevents": ["fsevents@2.3.3", "", { "os": "darwin" }, "sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw=="],
 
     "@payloadcms/plugin-ecommerce/@payloadcms/ui/sonner": ["sonner@1.7.4", "", { "peerDependencies": { "react": "^18.0.0 || ^19.0.0 || ^19.0.0-rc", "react-dom": "^18.0.0 || ^19.0.0 || ^19.0.0-rc" } }, "sha512-DIS8z4PfJRbIyfVFDVnK9rO3eYDtse4Omcm6bt0oEr5/jtLgysmjuBl1frJ9E/EQZrFmKx2A8m/s5s9CRXIzhw=="],
+
+    "@payloadcms/plugin-form-builder/@payloadcms/ui/@payloadcms/translations": ["@payloadcms/translations@3.71.1", "", { "dependencies": { "date-fns": "4.1.0" } }, "sha512-L1oDkBP2CvZBDl/4eU9jzsGlSmSYjxkkSDL5v4rZ8+9i8SyB6k95gtxztXtrQJZXEyBBUPCY0GHTlXcx2dKZmg=="],
+
+    "@payloadcms/plugin-form-builder/@payloadcms/ui/sonner": ["sonner@1.7.4", "", { "peerDependencies": { "react": "^18.0.0 || ^19.0.0 || ^19.0.0-rc", "react-dom": "^18.0.0 || ^19.0.0 || ^19.0.0-rc" } }, "sha512-DIS8z4PfJRbIyfVFDVnK9rO3eYDtse4Omcm6bt0oEr5/jtLgysmjuBl1frJ9E/EQZrFmKx2A8m/s5s9CRXIzhw=="],
 
     "drizzle-kit/esbuild/@esbuild/aix-ppc64": ["@esbuild/aix-ppc64@0.25.12", "", { "os": "aix", "cpu": "ppc64" }, "sha512-Hhmwd6CInZ3dwpuGTF8fJG6yoWmsToE+vYgD4nytZVxcu1ulHpUQRAB1UJ8+N1Am3Mz4+xOByoQoSZf4D+CpkA=="],
 
