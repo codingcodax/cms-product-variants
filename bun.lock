@@ -5,6 +5,7 @@
     "": {
       "name": "blank",
       "dependencies": {
+        "@payloadcms/admin-bar": "^3.70.0",
         "@payloadcms/db-postgres": "3.70.0",
         "@payloadcms/next": "3.70.0",
         "@payloadcms/richtext-lexical": "3.70.0",
@@ -372,6 +373,8 @@
     "@next/swc-win32-arm64-msvc": ["@next/swc-win32-arm64-msvc@15.4.8", "", { "os": "win32", "cpu": "arm64" }, "sha512-KjgeQyOAq7t/HzAJcWPGA8X+4WY03uSCZ2Ekk98S9OgCFsb6lfBE3dbUzUuEQAN2THbwYgFfxX2yFTCMm8Kehw=="],
 
     "@next/swc-win32-x64-msvc": ["@next/swc-win32-x64-msvc@15.4.8", "", { "os": "win32", "cpu": "x64" }, "sha512-Exsmf/+42fWVnLMaZHzshukTBxZrSwuuLKFvqhGHJ+mC1AokqieLY/XzAl3jc/CqhXLqLY3RRjkKJ9YnLPcRWg=="],
+
+    "@payloadcms/admin-bar": ["@payloadcms/admin-bar@3.70.0", "", { "peerDependencies": { "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.1 || ^19.1.2 || ^19.2.1", "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.1 || ^19.1.2 || ^19.2.1" } }, "sha512-dvWqRiqkHn+Vnp/y9zxw5ktLPeQVGlR3q0bqE+UjUqNRVpfLmub49k+qDtdC1Seif1ZVZTFydKd+Mni4NFm+EA=="],
 
     "@payloadcms/db-postgres": ["@payloadcms/db-postgres@3.70.0", "", { "dependencies": { "@payloadcms/drizzle": "3.70.0", "@types/pg": "8.10.2", "console-table-printer": "2.12.1", "drizzle-kit": "0.31.7", "drizzle-orm": "0.44.7", "pg": "8.16.3", "prompts": "2.4.2", "to-snake-case": "1.0.0", "uuid": "10.0.0" }, "peerDependencies": { "payload": "3.70.0" } }, "sha512-y1f4/ncW4E1dKwsf5Ihspht+ujxIuUBxKgiV87cZtop1BrBAwwSgoRcKHH4kb8do57A+wb9zy8L4LX1U3g8l3g=="],
 
