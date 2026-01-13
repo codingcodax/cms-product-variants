@@ -1,22 +1,329 @@
-# Payload CMS Development Rules
+# Development Guidelines
 
-You are an expert Payload CMS developer. When working with Payload projects, follow these rules:
+You are an expert full-stack developer working with Payload CMS and modern web technologies. This document defines code quality standards and framework-specific patterns for this project.
 
-## Core Principles
+## Code Quality Standards (Ultracite)
 
-1. **TypeScript-First**: Always use TypeScript with proper types from Payload
-2. **Security-Critical**: Follow all security patterns, especially access control
-3. **Type Generation**: Run `generate:types` script after schema changes
-4. **Transaction Safety**: Always pass `req` to nested operations in hooks
-5. **Access Control**: Understand Local API bypasses access control by default
-6. **Access Control**: Ensure roles exist when modifiyng collection or globals with access controls
+This project uses **Ultracite**, a zero-config preset built on Biome that enforces strict code quality through automated formatting and linting.
 
-### Code Validation
+### Quick Commands
 
-- To validate typescript correctness after modifying code run `tsc --noEmit`
-- Generate import maps after creating or modifying components.
+```bash
+bun x ultracite fix      # Auto-fix formatting and linting issues
+bun x ultracite check    # Check for issues without fixing
+bun x ultracite doctor   # Diagnose setup problems
+```
 
-## Project Structure
+Biome provides **10-20x faster** linting/formatting compared to ESLint+Prettier. Most issues are automatically fixable.[^1][^2]
+
+### Core Principles
+
+Write code that is **accessible, performant, type-safe, and maintainable**. Prioritize clarity and explicit intent over brevity.
+
+#### Type Safety \& Explicitness
+
+- Use explicit types for function parameters and return values when they enhance clarity
+- Prefer `unknown` over `any` when the type is genuinely unknown
+- Use const assertions (`as const`) for immutable values and literal types
+- Leverage TypeScript's type narrowing instead of type assertions
+- Extract magic numbers into named constants with descriptive names
+
+```typescript
+// ✅ Good: Explicit and type-safe
+function processUser(user: User): ProcessedUser {
+  const MAX_ATTEMPTS = 3 as const
+  return {
+    id: user.id,
+    email: user.email,
+    attempts: Math.min(user.attempts, MAX_ATTEMPTS),
+  }
+}
+
+// ❌ Bad: Using any and magic numbers
+function processUser(user: any) {
+  return { ...user, attempts: Math.min(user.attempts, 3) }
+}
+```
+
+#### Modern JavaScript/TypeScript
+
+- Use arrow functions for callbacks and short functions
+- Prefer `for...of` loops over `.forEach()` and indexed `for` loops
+- Use optional chaining (`?.`) and nullish coalescing (`??`)
+- Prefer template literals over string concatenation
+- Use destructuring for object and array assignments
+- Use `const` by default, `let` only when reassignment needed, never `var`
+
+```typescript
+// ✅ Good: Modern patterns
+const fullName = user?.profile?.name ?? 'Anonymous'
+for (const item of items) {
+  console.log(item)
+}
+
+// ❌ Bad: Old patterns
+const fullName = user && user.profile && user.profile.name ? user.profile.name : 'Anonymous'
+items.forEach((item, index) => {
+  console.log(items[index])
+})
+```
+
+#### Async \& Error Handling
+
+- Always `await` promises in async functions
+- Use `async/await` instead of promise chains
+- Handle errors with try-catch blocks in async code
+- Don't use async functions as Promise executors
+- Throw `Error` objects with descriptive messages, not strings
+
+```typescript
+// ✅ Good: Proper async handling
+async function fetchUser(id: string): Promise<User> {
+  try {
+    const response = await fetch(`/api/users/${id}`)
+    if (!response.ok) {
+      throw new Error(`Failed to fetch user: ${response.statusText}`)
+    }
+    return await response.json()
+  } catch (error) {
+    console.error('User fetch error:', error)
+    throw error
+  }
+}
+
+// ❌ Bad: Unhandled promises
+async function fetchUser(id: string) {
+  const response = fetch(`/api/users/${id}`) // Missing await!
+  return response.json()
+}
+```
+
+#### React Best Practices
+
+- Use function components over class components
+- Call hooks at the top level only, never conditionally
+- Specify all dependencies in hook dependency arrays
+- Use `key` prop with unique IDs (not array indices) for iterables
+- Nest children between tags instead of passing as props
+- Don't define components inside other components
+
+```tsx
+// ✅ Good: Proper hooks and keys
+function UserList({ users }: { users: User[] }) {
+  const [filter, setFilter] = useState('')
+
+  useEffect(() => {
+    fetchData()
+  }, [filter]) // All dependencies included
+
+  return users.map((user) => (
+    <UserCard key={user.id} user={user} /> // Unique ID as key
+  ))
+}
+
+// ❌ Bad: Conditional hooks, index keys
+function UserList({ users }) {
+  if (someCondition) {
+    const [filter, setFilter] = useState('') // Conditional hook!
+  }
+
+  return users.map((user, index) => (
+    <UserCard key={index} user={user} /> // Array index as key
+  ))
+}
+```
+
+#### Accessibility (a11y)
+
+- Provide meaningful `alt` text for images
+- Use proper heading hierarchy (h1 → h2 → h3)
+- Add labels for form inputs
+- Include keyboard handlers alongside mouse events
+- Use semantic HTML (`<button>`, `<nav>`, `<main>`) over divs with roles
+- Add `rel="noopener"` when using `target="_blank"`
+
+```tsx
+// ✅ Good: Accessible markup
+<form>
+  <label htmlFor="email">Email address</label>
+  <input id="email" type="email" required />
+  <button type="submit">Subscribe</button>
+</form>
+
+// ❌ Bad: Inaccessible markup
+<div onClick={handleClick}>Click me</div>
+<input type="email" placeholder="Email" /> {/* Missing label */}
+<img src="/photo.jpg" /> {/* Missing alt text */}
+```
+
+#### Security
+
+- Avoid `dangerouslySetInnerHTML` unless absolutely necessary
+- Don't use `eval()` or assign to `document.cookie`
+- Validate and sanitize user input
+- Use Next.js `<Image>` component over `<img>` tags
+
+#### Performance
+
+- Avoid spread syntax in accumulators within loops
+- Use top-level regex literals instead of creating in loops
+- Prefer specific imports over namespace imports
+- Avoid barrel files (index files re-exporting everything)
+
+```typescript
+// ✅ Good: Efficient patterns
+import { Button } from '@/components/Button'
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+// ❌ Bad: Performance issues
+import * as Components from '@/components' // Namespace import
+const isValid = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) // Regex in function
+```
+
+#### Code Organization
+
+- Keep functions focused with low cognitive complexity
+- Extract complex conditions into well-named boolean variables
+- Use early returns to reduce nesting
+- Prefer simple conditionals over nested ternaries
+- Remove `console.log`, `debugger`, and `alert` from production code
+
+```typescript
+// ✅ Good: Early returns, clear logic
+function canEditPost(user: User, post: Post): boolean {
+  if (!user) return false
+  if (user.roles.includes('admin')) return true
+
+  const isAuthor = post.authorId === user.id
+  const isWithinEditWindow = Date.now() - post.createdAt < 3600000
+
+  return isAuthor && isWithinEditWindow
+}
+
+// ❌ Bad: Nested conditionals
+function canEditPost(user, post) {
+  if (user) {
+    if (user.roles.includes('admin')) {
+      return true
+    } else {
+      if (post.authorId === user.id) {
+        if (Date.now() - post.createdAt < 3600000) {
+          return true
+        }
+      }
+    }
+  }
+  return false
+}
+```
+
+### Testing
+
+- Write assertions inside `it()` or `test()` blocks
+- Use async/await instead of done callbacks
+- Don't commit `.only` or `.skip` in tests
+- Keep test suites reasonably flat
+
+### Framework-Specific Notes
+
+**Next.js:**
+
+- Use `<Image>` component for images
+- Use App Router metadata API for head elements
+- Use Server Components for async data fetching
+
+**React 19+:**
+
+- Use ref as a prop instead of `React.forwardRef`
+
+### Beyond Biome
+
+Biome handles formatting and common issues automatically. Focus your attention on:
+
+1. **Business logic correctness** - Biome can't validate algorithms
+2. **Meaningful naming** - Use descriptive names for functions/variables/types
+3. **Architecture** - Component structure, data flow, API design
+4. **Edge cases** - Handle boundary conditions and error states
+5. **User experience** - Accessibility, performance, usability
+6. **Documentation** - Comment complex logic, prefer self-documenting code
+
+---
+
+## Payload CMS Development Rules
+
+### Development Environment
+
+#### Build Commands
+
+```bash
+pnpm build        # Build production bundle with Next.js
+pnpm dev          # Start development server
+pnpm devsafe      # Clean dev server (removes .next cache)
+pnpm start        # Start production server
+pnpm payload      # Access Payload CLI
+```
+
+#### Type Generation \& Validation
+
+```bash
+pnpm generate:types      # Generate TypeScript types from schema
+pnpm generate:importmap  # Generate import map for admin components
+tsc --noEmit            # Validate TypeScript without emitting files
+```
+
+**Important:** Always run `generate:types` after schema changes and `generate:importmap` after creating/modifying components.[^3]
+
+#### Testing
+
+```bash
+pnpm test                                              # Run all tests
+pnpm test:int                                         # Integration tests (Vitest)
+pnpm test:e2e                                         # E2E tests (Playwright)
+pnpm exec vitest run tests/int/specific.test.ts      # Single integration test
+pnpm exec playwright test tests/e2e/spec.e2e.spec.ts # Single e2e test
+```
+
+### Code Style (Payload-Specific)
+
+#### Formatting (Prettier)
+
+- **Single quotes**: Always use single quotes
+- **Trailing commas**: Required in arrays/objects
+- **Print width**: 100 characters max
+- **Semicolons**: Disabled
+- **Indentation**: 2 spaces
+
+#### Import Organization
+
+```typescript
+// 1. React imports first
+import React from 'react'
+
+// 2. Third-party libraries
+import { useState } from 'react'
+import type { CollectionConfig } from 'payload'
+
+// 3. Local imports with path aliases
+import { Users } from '@/collections/users'
+import config from '@payload-config'
+
+// 4. Relative imports (avoid when possible)
+import { helper } from '../utils/helper'
+```
+
+#### Naming Conventions
+
+| Type        | Convention                                 | Example                             |
+| :---------- | :----------------------------------------- | :---------------------------------- |
+| Collections | PascalCase, singular                       | `Users`, `Posts`, `Media`           |
+| Fields      | camelCase                                  | `firstName`, `isPublished`          |
+| Slugs       | kebab-case                                 | `blog-posts`, `user-profiles`       |
+| Components  | PascalCase                                 | `CustomField`, `AdminHeader`        |
+| Hooks       | camelCase with `use`                       | `useAuth`, `useDocumentInfo`        |
+| Types       | PascalCase                                 | `UserDocument`, `PostStatus`        |
+| Files       | kebab-case (components), camelCase (utils) | `custom-field.tsx`, `formatDate.ts` |
+
+### Project Structure
 
 ```
 src/
@@ -31,9 +338,26 @@ src/
 └── payload.config.ts        # Main config
 ```
 
-## Configuration
+### Core Principles
 
-### Minimal Config Pattern
+1. **TypeScript-First**: Always use TypeScript with proper types from Payload
+2. **Security-Critical**: Follow all security patterns, especially access control
+3. **Type Generation**: Run `generate:types` after schema changes
+4. **Transaction Safety**: Always pass `req` to nested operations in hooks
+5. **Access Control**: Local API bypasses access control by default
+6. **Role Verification**: Ensure roles exist when modifying collections/globals with access controls
+
+#### Code Validation
+
+```bash
+tsc --noEmit                    # Validate TypeScript correctness
+pnpm generate:importmap         # After creating/modifying components
+bun x ultracite fix            # Fix formatting and linting
+```
+
+### Configuration
+
+#### Minimal Config Pattern
 
 ```typescript
 import { buildConfig } from 'payload'
@@ -64,9 +388,9 @@ export default buildConfig({
 })
 ```
 
-## Collections
+### Collections
 
-### Basic Collection
+#### Basic Collection
 
 ```typescript
 import type { CollectionConfig } from 'payload'
@@ -87,7 +411,7 @@ export const Posts: CollectionConfig = {
 }
 ```
 
-### Auth Collection with RBAC
+#### Auth Collection with RBAC
 
 ```typescript
 export const Users: CollectionConfig = {
@@ -110,9 +434,7 @@ export const Users: CollectionConfig = {
 }
 ```
 
-## Fields
-
-### Common Patterns
+### Common Field Patterns
 
 ```typescript
 // Auto-generate slugs
@@ -137,7 +459,7 @@ slugField({ fieldToUse: 'title' })
   },
 }
 
-// Virtual field
+// Virtual field (Payload 3.0+)
 {
   name: 'fullName',
   type: 'text',
@@ -156,7 +478,7 @@ slugField({ fieldToUse: 'title' })
 // ❌ SECURITY BUG: Access control bypassed
 await payload.find({
   collection: 'posts',
-  user: someUser, // Ignored! Operation runs with ADMIN privileges
+  user: someUser, // Ignored! Runs with ADMIN privileges
 })
 
 // ✅ SECURE: Enforces user permissions
@@ -527,13 +849,6 @@ The Admin Panel can be extensively customized using React Components. Custom Com
 
 Components are defined using **file paths** (not direct imports) in your config:
 
-**Component Path Rules:**
-
-- Paths are relative to project root or `config.admin.importMap.baseDir`
-- Named exports: use `#ExportName` suffix or `exportName` property
-- Default exports: no suffix needed
-- File extensions can be omitted
-
 ```typescript
 import { buildConfig } from 'payload'
 
@@ -563,9 +878,6 @@ export default buildConfig({
       beforeLogin: ['/components/SSOButtons'],
       logout: { Button: '/components/LogoutButton' },
 
-      // Settings
-      settingsMenu: ['/components/SettingsMenu'],
-
       // Views
       views: {
         dashboard: { Component: '/components/CustomDashboard' },
@@ -581,13 +893,6 @@ export default buildConfig({
 - Named exports: use `#ExportName` suffix or `exportName` property
 - Default exports: no suffix needed
 - File extensions can be omitted
-
-### Component Types
-
-1. **Root Components** - Global Admin Panel (logo, nav, header)
-2. **Collection Components** - Collection-specific (edit view, list view)
-3. **Global Components** - Global document views
-4. **Field Components** - Custom field UI and cells
 
 ### Component Types
 
@@ -624,7 +929,7 @@ export function MyClientComponent() {
   const { user } = useAuth()
 
   return (
-    <button onClick={() => setCount(count + 1)}>
+    <button type="button" onClick={() => setCount(count + 1)}>
       {user?.email}: Clicked {count} times
     </button>
   )
@@ -644,7 +949,6 @@ import {
   useFormFields, // Multiple field values (optimized)
   useLocale, // Current locale
   useTranslation, // i18n translations
-  usePayload, // Local API methods
 } from '@payloadcms/ui'
 
 export function MyComponent() {
@@ -725,28 +1029,24 @@ export const Posts: CollectionConfig = {
 ### Performance Best Practices
 
 1. **Import correctly:**
-
    - Admin Panel: `import { Button } from '@payloadcms/ui'`
    - Frontend: `import { Button } from '@payloadcms/ui/elements/Button'`
-
 2. **Optimize re-renders:**
 
-   ```tsx
-   // ❌ BAD: Re-renders on every form change
-   const { fields } = useForm()
+```tsx
+// ❌ BAD: Re-renders on every form change
+const { fields } = useForm()
 
-   // ✅ GOOD: Only re-renders when specific field changes
-   const value = useFormFields(([fields]) => fields[path])
-   ```
+// ✅ GOOD: Only re-renders when specific field changes
+const value = useFormFields(([fields]) => fields[path])
+```
 
-3. **Prefer Server Components** - Only use Client Components when you need:
-
+1. **Prefer Server Components** - Only use Client Components when you need:
    - State (useState, useReducer)
    - Effects (useEffect)
    - Event handlers (onClick, onChange)
    - Browser APIs (localStorage, window)
-
-4. **Minimize serialized props** - Server Components serialize props sent to client
+2. **Minimize serialized props** - Server Components serialize props sent to client
 
 ### Styling Components
 
@@ -754,7 +1054,11 @@ export const Posts: CollectionConfig = {
 import './styles.scss'
 
 export function MyComponent() {
-  return <div className="my-component">Content</div>
+```
+
+return <div className="my-component">Content</div>
+
+```
 }
 ```
 
@@ -800,20 +1104,7 @@ Payload auto-generates `app/(payload)/admin/importMap.js` to resolve component p
 **Regenerate manually:**
 
 ```bash
-payload generate:importmap
-```
-
-**Set custom location:**
-
-```typescript
-export default buildConfig({
-  admin: {
-    importMap: {
-      baseDir: path.resolve(dirname, 'src'),
-      importMapFile: path.resolve(dirname, 'app', 'custom-import-map.js'),
-    },
-  },
-})
+pnpm generate:importmap
 ```
 
 ## Custom Endpoints
@@ -859,7 +1150,7 @@ export const trackingEndpoint: Endpoint = {
 }
 ```
 
-## Drafts & Versions
+## Drafts \& Versions
 
 ```typescript
 export const Pages: CollectionConfig = {
@@ -1035,107 +1326,26 @@ export const myPlugin =
 
 ## Additional Context Files
 
-For deeper exploration of specific topics, refer to the context files located in `.cursor/rules/`:
-
-### Available Context Files
+For deeper exploration of specific topics, refer to the context files in `.cursor/rules/`:
 
 1. **`payload-overview.md`** - High-level architecture and core concepts
-
-   - Payload structure and initialization
-   - Configuration fundamentals
-   - Database adapters overview
-
 2. **`security-critical.md`** - Critical security patterns (⚠️ IMPORTANT)
-
-   - Local API access control
-   - Transaction safety in hooks
-   - Preventing infinite hook loops
-
 3. **`collections.md`** - Collection configurations
-
-   - Basic collection patterns
-   - Auth collections with RBAC
-   - Upload collections
-   - Drafts and versioning
-   - Globals
-
 4. **`fields.md`** - Field types and patterns
-
-   - All field types with examples
-   - Conditional fields
-   - Virtual fields
-   - Field validation
-   - Common field patterns
-
 5. **`field-type-guards.md`** - TypeScript field type utilities
-
-   - Field type checking utilities
-   - Safe type narrowing
-   - Runtime field validation
-
 6. **`access-control.md`** - Permission patterns
-
-   - Collection-level access
-   - Field-level access
-   - Row-level security
-   - RBAC patterns
-   - Multi-tenant access control
-
 7. **`access-control-advanced.md`** - Complex access patterns
-
-   - Nested document access
-   - Cross-collection permissions
-   - Dynamic role hierarchies
-   - Performance optimization
-
 8. **`hooks.md`** - Lifecycle hooks
-
-   - Collection hooks
-   - Field hooks
-   - Hook context patterns
-   - Common hook recipes
-
 9. **`queries.md`** - Database operations
-
-   - Local API usage
-   - Query operators
-   - Complex queries with AND/OR
-   - Performance optimization
-
 10. **`endpoints.md`** - Custom API endpoints
-
-    - REST endpoint patterns
-    - Authentication in endpoints
-    - Error handling
-    - Route parameters
-
 11. **`adapters.md`** - Database and storage adapters
-
-    - MongoDB, PostgreSQL, SQLite patterns
-    - Storage adapter usage (S3, Azure, GCS, etc.)
-    - Custom adapter development
-
 12. **`plugin-development.md`** - Creating plugins
-
-    - Plugin architecture
-    - Modifying configuration
-    - Plugin hooks
-    - Best practices
-
 13. **`components.md`** - Custom Components
-
-    - Component types (Root, Collection, Global, Field)
-    - Server vs Client Components
-    - Component paths and definition
-    - Default and custom props
-    - Using hooks
-    - Performance best practices
-    - Styling components
 
 ## Resources
 
-- Docs: https://payloadcms.com/docs
-- LLM Context: https://payloadcms.com/llms-full.txt
-- GitHub: https://github.com/payloadcms/payload
-- Examples: https://github.com/payloadcms/payload/tree/main/examples
-- Templates: https://github.com/payloadcms/payload/tree/main/templates
+- **Payload Docs**: <https://payloadcms.com/docs>
+- **Payload LLM Context**: <https://payloadcms.com/llms-full.txt>
+- **Payload GitHub**: <https://github.com/payloadcms/payload>
+- **Ultracite Docs**: <https://www.ultracite.ai>
+- **Biome Docs**: <https://biomejs.dev>
