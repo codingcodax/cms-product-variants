@@ -19,8 +19,10 @@ const buttonVariants = cva(
 				ghost:
 					'hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
 				link: 'text-primary underline-offset-4 hover:underline',
+				nav: 'p-0 pt-2 pb-6 font-mono text-primary/50 text-xs uppercase tracking-widest hover:text-primary [&.active]:text-primary',
 			},
 			size: {
+				clear: '',
 				default: 'h-9 px-4 py-2 has-[>svg]:px-3',
 				sm: 'h-8 gap-1.5 rounded-md px-3 has-[>svg]:px-2.5',
 				lg: 'h-10 rounded-md px-6 has-[>svg]:px-4',
@@ -36,16 +38,18 @@ const buttonVariants = cva(
 	}
 );
 
-function Button({
+export type ButtonProps = React.ComponentProps<'button'> &
+	VariantProps<typeof buttonVariants> & {
+		asChild?: boolean;
+	};
+
+const Button = ({
 	className,
 	variant = 'default',
 	size = 'default',
 	asChild = false,
 	...props
-}: React.ComponentProps<'button'> &
-	VariantProps<typeof buttonVariants> & {
-		asChild?: boolean;
-	}) {
+}: ButtonProps) => {
 	const Comp = asChild ? SlotPrimitive.Slot : 'button';
 
 	return (
@@ -57,6 +61,6 @@ function Button({
 			{...props}
 		/>
 	);
-}
+};
 
 export { Button, buttonVariants };
