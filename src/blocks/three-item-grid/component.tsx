@@ -14,15 +14,7 @@ interface Props {
 }
 
 export const ThreeItemGridItem = ({ item, size }: Props) => {
-	let price = item.priceInUSD;
-
-	if (item.enableVariants && item.variants?.docs?.length) {
-		const variant = item.variants.docs[0];
-
-		if (variant && typeof variant === 'object' && variant.priceInUSD) {
-			price = variant.priceInUSD;
-		}
-	}
+	const price = 0;
 
 	return (
 		<div

@@ -30,10 +30,8 @@ export const MediaBlock = (props: Props) => {
 		disableInnerContainer,
 	} = props;
 
+	// biome-ignore lint/suspicious/noUnassignedVariables: idk
 	let caption: SerializedEditorState<SerializedLexicalNode> | undefined;
-	if (media && typeof media === 'object') {
-		caption = media.caption;
-	}
 
 	return (
 		<div

@@ -46,8 +46,7 @@ export const CarouselClient = ({ products }: Props) => {
 						>
 							<GridTileImage
 								label={{
-									// biome-ignore lint/style/noNonNullAssertion: idk
-									amount: product.priceInUSD!,
+									amount: 0,
 									title: product.title,
 								}}
 								media={product.meta?.image as Media}
