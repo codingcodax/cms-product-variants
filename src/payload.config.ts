@@ -10,6 +10,7 @@ import {
 	HeadingFeature,
 	lexicalEditor,
 } from '@payloadcms/richtext-lexical';
+import { es } from '@payloadcms/translations/languages/es';
 import { buildConfig } from 'payload';
 import sharp from 'sharp';
 import type { Page, Product } from '@/payload-types';
@@ -55,6 +56,10 @@ export default buildConfig({
 		importMap: {
 			baseDir: path.resolve(dirname),
 		},
+	},
+	i18n: {
+		fallbackLanguage: 'es',
+		supportedLanguages: { es },
 	},
 	collections: [
 		Users,
