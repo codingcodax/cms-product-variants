@@ -265,6 +265,8 @@ export interface Order {
   createdAt: string;
 }
 /**
+ * Tus productos
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "products".
  */
@@ -294,6 +296,7 @@ export interface Product {
     image?: (number | null) | Media;
     description?: string | null;
   };
+  hasVariants?: string | null;
   categories?: (number | Category)[] | null;
   'sub-categories'?: (number | SubCategory)[] | null;
   /**
@@ -307,6 +310,7 @@ export interface Product {
   slug: string;
   updatedAt: string;
   createdAt: string;
+  deletedAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1757,6 +1761,7 @@ export interface ProductsSelect<T extends boolean = true> {
         image?: T;
         description?: T;
       };
+  hasVariants?: T;
   categories?: T;
   'sub-categories'?: T;
   totalAvailableStock?: T;
@@ -1764,6 +1769,7 @@ export interface ProductsSelect<T extends boolean = true> {
   slug?: T;
   updatedAt?: T;
   createdAt?: T;
+  deletedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
