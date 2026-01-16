@@ -21,7 +21,7 @@ import { isDocumentOwner } from './access/is-document-owner';
 import { CartsCollection } from './collections/carts';
 import { Categories } from './collections/categories';
 import { InventoryBatches } from './collections/inventory-batches';
-import { Media } from './collections/media';
+import { Media } from './collections/media/media';
 import { OrdersCollection } from './collections/orders/orders';
 import { Pages } from './collections/pages/pages';
 import { ProductsCollection } from './collections/products/products';
