@@ -1,10 +1,18 @@
 import type { CollectionConfig } from 'payload';
+import { adminOrSelf } from '@/access/admin-or-self';
+import { publicAccess } from '@/access/public-access';
 
 export const InventoryBatches: CollectionConfig = {
 	slug: 'inventory-batches',
 	labels: {
 		singular: 'Lote de Inventario',
 		plural: 'Lotes de Inventario',
+	},
+	access: {
+		create: adminOrSelf,
+		delete: adminOrSelf,
+		read: publicAccess,
+		update: adminOrSelf,
 	},
 	admin: {
 		useAsTitle: 'batchNumber',
