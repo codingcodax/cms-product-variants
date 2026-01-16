@@ -15,13 +15,13 @@ export const getInventory: FieldHook<
 		collection: 'inventory-batches',
 		where: {
 			and: [
+				{ status: { equals: 'active' } },
 				{
 					or: [
 						{ product: { equals: data?.id } },
-						{ variant: { equals: data?.id } },
+						{ 'variant.product': { equals: data?.id } },
 					],
 				},
-				{ status: { equals: 'active' } },
 			],
 		},
 	});
