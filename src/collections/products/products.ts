@@ -14,19 +14,24 @@ import {
 	lexicalEditor,
 } from '@payloadcms/richtext-lexical';
 import { slugField } from 'payload';
+import { adminOnlyFieldAccess } from '@/access/admin-only-field-access';
 import { adminOrSelf } from '@/access/admin-or-self';
 import { publicAccess } from '@/access/public-access';
 import { generatePreviewPath } from '@/lib/generate-preview-path';
+import { getInventory } from './hooks/get-inventory';
+import { hasVariants } from './hooks/has-variants';
 
 export const ProductsCollection: CollectionOverride = () => ({
+	trash: true,
 	slug: 'products',
 	labels: {
 		singular: 'Producto',
 		plural: 'Productos',
 	},
 	admin: {
-		defaultColumns: ['title'],
+		defaultColumns: ['title', 'hasVariants'],
 		label: 'Productos',
+		description: 'Tus productos',
 		livePreview: {
 			url: ({ data, req }) =>
 				generatePreviewPath({
@@ -204,6 +209,23 @@ export const ProductsCollection: CollectionOverride = () => ({
 			],
 		},
 		{
+			label: '¿Tiene variantes?',
+			name: 'hasVariants',
+			type: 'text',
+			virtual: true,
+			admin: {
+				hidden: true,
+				readOnly: true,
+				position: 'sidebar',
+			},
+			access: {
+				read: adminOnlyFieldAccess,
+			},
+			hooks: {
+				afterRead: [hasVariants],
+			},
+		},
+		{
 			name: 'categories',
 			type: 'relationship',
 			admin: {
@@ -231,34 +253,11 @@ export const ProductsCollection: CollectionOverride = () => ({
 				position: 'sidebar',
 				description: 'Sum of all active batch quantities',
 			},
+			access: {
+				read: adminOnlyFieldAccess,
+			},
 			hooks: {
-				// afterRead: [
-				// 	async ({ req, data }) => {
-				// 		if (!data?.id) {
-				// 			return 0;
-				// 		}
-				//
-				// 		const batches = await req.payload.find({
-				// 			collection: 'inventory-batches',
-				// 			where: {
-				// 				and: [
-				// 					{
-				// 						or: [
-				// 							{ product: { equals: data.id } },
-				// 							{ variant: { exists: true } },
-				// 						],
-				// 					},
-				// 					{ status: { equals: 'active' } },
-				// 				],
-				// 			},
-				// 		});
-				//
-				// 		return batches.docs.reduce(
-				// 			(sum, batch) => sum + (batch.quantity || 0),
-				// 			0
-				// 		);
-				// 	},
-				// ],
+				afterRead: [getInventory],
 			},
 		},
 		slugField(),
