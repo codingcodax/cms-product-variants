@@ -30,6 +30,7 @@ import { TransactionsCollection } from './collections/transactions';
 import { Users } from './collections/users/users';
 import { VariantOptions } from './collections/variant-options';
 import { VariantTypes } from './collections/variant-types';
+import { Variants } from './collections/variants';
 import { getServerSideURL } from './lib/get-url';
 
 const generateTitle: GenerateTitle<Product | Page> = ({ doc }) => {
@@ -57,13 +58,14 @@ export default buildConfig({
 	},
 	collections: [
 		Users,
-		Categories,
-		SubCategories,
 		Media,
 		Pages,
-		InventoryBatches,
-		VariantOptions,
 		VariantTypes,
+		VariantOptions,
+		Variants,
+		InventoryBatches,
+		Categories,
+		SubCategories,
 	],
 	editor: lexicalEditor(),
 	secret: process.env.PAYLOAD_SECRET || '',
