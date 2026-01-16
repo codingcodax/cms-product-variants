@@ -2,12 +2,16 @@ import type { CollectionConfig } from 'payload';
 
 export const InventoryBatches: CollectionConfig = {
 	slug: 'inventory-batches',
+	labels: {
+		singular: 'Lote de Inventario',
+		plural: 'Lotes de Inventario',
+	},
 	admin: {
 		useAsTitle: 'batchNumber',
 		defaultColumns: [
 			'batchNumber',
 			'product',
-			'variantID',
+			'variant',
 			'quantity',
 			'expiryDate',
 			'status',
@@ -23,75 +27,83 @@ export const InventoryBatches: CollectionConfig = {
 			index: true,
 		},
 		{
-			name: 'product',
-			type: 'relationship',
-			relationTo: 'products',
-			required: true,
-			index: true,
-		},
-		{
-			name: 'variantID',
-			type: 'text',
-			admin: {
-				description:
-					'Variant option ID if this batch is for a specific variant',
-				condition: (_data, siblingData) => {
-					// Show only if the linked product has enableVariants = true
-					return siblingData?.product?.enableVariants === true;
+			type: 'row',
+			fields: [
+				{
+					name: 'product',
+					type: 'relationship',
+					relationTo: 'products',
+					required: false,
+					index: true,
+					admin: {
+						condition: (data) => !data?.variant,
+					},
 				},
-			},
-			index: true,
-		},
-		{
-			name: 'quantity',
-			type: 'number',
-			required: true,
-			min: 0,
-			defaultValue: 0,
-		},
-		{
-			name: 'expiryDate',
-			type: 'date',
-			admin: {
-				date: {
-					pickerAppearance: 'dayAndTime',
-					displayFormat: 'MMM dd, yyyy',
+				{
+					name: 'variant',
+					type: 'relationship',
+					relationTo: 'custom-product-variants',
+					required: false,
+					index: true,
+					admin: {
+						condition: (data) => !data?.product,
+					},
 				},
-			},
-		},
-		{
-			name: 'manufactureDate',
-			type: 'date',
-		},
-		{
-			name: 'receivedDate',
-			type: 'date',
-			required: true,
-			defaultValue: () => new Date().toISOString(),
-		},
-		{
-			name: 'status',
-			type: 'select',
-			options: [
-				{ label: 'Active', value: 'active' },
-				{ label: 'Depleted', value: 'depleted' },
-				{ label: 'Expired', value: 'expired' },
-				{ label: 'Reserved', value: 'reserved' },
-				{ label: 'Recalled', value: 'recalled' },
 			],
-			defaultValue: 'active',
-			index: true,
+		},
+		{
+			type: 'row',
+			fields: [
+				{
+					name: 'quantity',
+					type: 'number',
+					required: true,
+					min: 0,
+					defaultValue: 0,
+				},
+				{
+					name: 'status',
+					type: 'select',
+					options: [
+						{ label: 'Active', value: 'active' },
+						{ label: 'Depleted', value: 'depleted' },
+						{ label: 'Expired', value: 'expired' },
+						{ label: 'Reserved', value: 'reserved' },
+						{ label: 'Recalled', value: 'recalled' },
+					],
+					defaultValue: 'active',
+					index: true,
+				},
+			],
+		},
+		{
+			type: 'row',
+			fields: [
+				{
+					name: 'expiryDate',
+					type: 'date',
+					admin: {
+						date: {
+							pickerAppearance: 'dayAndTime',
+							displayFormat: 'MMM dd, yyyy',
+						},
+					},
+				},
+				{
+					name: 'manufactureDate',
+					type: 'date',
+				},
+				{
+					name: 'receivedDate',
+					type: 'date',
+					required: true,
+					defaultValue: () => new Date().toISOString(),
+				},
+			],
 		},
 		{
 			name: 'supplier',
 			type: 'text',
-		},
-		{
-			name: 'costPerUnit',
-			type: 'number',
-			admin: {
-				description: 'Cost per unit for inventory valuation',
-			},
 		},
 		{
 			name: 'notes',
@@ -101,6 +113,13 @@ export const InventoryBatches: CollectionConfig = {
 	hooks: {
 		beforeChange: [
 			({ data, originalDoc }) => {
+				// Validate that exactly one of product or variant is set
+				if ((data.product && data.variant) || !(data.product || data.variant)) {
+					throw new Error(
+						'Inventory batch must be linked to either a product or a variant, but not both or neither.'
+					);
+				}
+
 				// Auto-mark as depleted when quantity reaches 0
 				if (data.quantity === 0 && data.status === 'active') {
 					data.status = 'depleted';

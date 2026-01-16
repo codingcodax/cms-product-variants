@@ -3,7 +3,7 @@ import { adminOnly } from '@/access/admin-only';
 import { adminOrSelf } from '@/access/admin-or-self';
 
 export const VariantOptions: CollectionConfig = {
-	slug: 'variant-options',
+	slug: 'custom-variant-options',
 	labels: {
 		singular: 'Opción de Variante',
 		plural: 'Opciones de Variantes',
@@ -14,18 +14,19 @@ export const VariantOptions: CollectionConfig = {
 		read: adminOrSelf,
 		update: adminOrSelf,
 	},
-	admin: { useAsTitle: 'value' },
+	admin: { useAsTitle: 'value', group: 'Ecommerce' },
 	fields: [
 		{
+			label: 'Valor',
 			name: 'value',
 			type: 'text',
 			required: true,
 		},
 		{
-			name: 'type',
+			name: 'variant-type',
 			type: 'relationship',
-			relationTo: 'variant-types',
-			required: true, // Bidirectional link
+			relationTo: 'custom-variant-types',
+			required: true,
 		},
 	],
 };

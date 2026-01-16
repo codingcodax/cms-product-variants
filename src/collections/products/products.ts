@@ -13,7 +13,7 @@ import {
 	InlineToolbarFeature,
 	lexicalEditor,
 } from '@payloadcms/richtext-lexical';
-import { type DefaultDocumentIDType, slugField, type Where } from 'payload';
+import { slugField } from 'payload';
 import { adminOrSelf } from '@/access/admin-or-self';
 import { publicAccess } from '@/access/public-access';
 import { generatePreviewPath } from '@/lib/generate-preview-path';
@@ -42,6 +42,7 @@ export const ProductsCollection: CollectionOverride = () => ({
 				req,
 			}),
 		useAsTitle: 'title',
+		group: 'Ecommerce',
 	},
 	access: {
 		create: adminOrSelf,
@@ -76,174 +77,103 @@ export const ProductsCollection: CollectionOverride = () => ({
 							}),
 							required: false,
 						},
-						{
-							label: 'Imagenes',
-							name: 'images',
-							type: 'array',
-							minRows: 1,
-							fields: [
-								{
-									name: 'image',
-									type: 'upload',
-									relationTo: 'media',
-									required: true,
-								},
-								{
-									name: 'variant',
-									type: 'relationship',
-									relationTo: 'variants',
-									admin: {
-										condition: (data) => {
-											return (
-												data?.enableVariants === true &&
-												data?.variantTypes?.length > 0
-											);
-										},
-									},
-									filterOptions: ({ data }) => {
-										if (data?.enableVariants && data?.variantTypes?.length) {
-											const variantTypeIDs = data.variantTypes.map(
-												(item: { id: number } | undefined) => {
-													if (typeof item === 'object' && item?.id) {
-														return item.id;
-													}
-													return item;
-												}
-											) as DefaultDocumentIDType[];
-
-											if (variantTypeIDs.length === 0) {
-												return {
-													variantType: {
-														in: [],
-													},
-												};
-											}
-
-											const query: Where = {
-												variantType: {
-													in: variantTypeIDs,
-												},
-											};
-
-											return query;
-										}
-
-										return {
-											variantType: {
-												in: [],
-											},
-										};
-									},
-								},
-							],
-						},
+						// {
+						// 	label: 'Imagenes',
+						// 	name: 'images',
+						// 	type: 'array',
+						// 	minRows: 1,
+						// 	fields: [
+						// 		{
+						// 			name: 'image',
+						// 			type: 'upload',
+						// 			relationTo: 'media',
+						// 			required: true,
+						// 		},
+						// 		{
+						// 			name: 'variant',
+						// 			type: 'relationship',
+						// 			relationTo: 'variants',
+						// 			admin: {
+						// 				condition: (data) => Boolean(data?.enableVariants),
+						// 			},
+						// 			filterOptions: ({ id }) => {
+						// 				if (id) {
+						// 					return {
+						// 						product: {
+						// 							equals: id,
+						// 						},
+						// 					};
+						// 				}
+						// 				return false;
+						// 			},
+						// 		},
+						// 	],
+						// },
 					],
 				},
-				{
-					label: 'Opciones de Variantes',
-					fields: [
-						{
-							type: 'row',
-							fields: [
-								{
-									label: 'Habilitar Variantes',
-									name: 'enableVariants',
-									type: 'checkbox',
-									admin: {
-										width: 'fit-content',
-									},
-								},
-								{
-									label: 'Variantes tienen diferentes precios',
-									name: 'enableVariantPrices',
-									type: 'checkbox',
-									admin: {
-										description:
-											'Si es falso, el precio esta en los detalles del producto',
-										width: 'fit-content',
-										style: {
-											marginLeft: '2rem',
-										},
-									},
-								},
-							],
-						},
-						{
-							label: 'Variantes',
-							name: 'variants',
-							type: 'array',
-							admin: {
-								components: {
-									RowLabel:
-										'@/collections/products/components/row-labels/variant-label#VariantLabel',
-								},
-								condition: (_, siblingData) => {
-									return Boolean(siblingData.enableVariants);
-								},
-							},
-							minRows: 1,
-							fields: [
-								{
-									label: 'Tipo',
-									name: 'type',
-									type: 'relationship',
-									relationTo: 'variant-types',
-									required: true,
-								},
-								{
-									label: 'Opción',
-									name: 'option',
-									type: 'relationship',
-									relationTo: 'variant-options',
-									required: true,
-								},
-								{
-									name: 'variantSlug',
-									type: 'text',
-									admin: {
-										readOnly: true,
-									},
-								},
-								{
-									name: 'image',
-									type: 'upload',
-									relationTo: 'media',
-								},
-								{
-									label: 'Precio',
-									name: 'price',
-									type: 'number',
-									required: true,
-									admin: {
-										condition: (data) => Boolean(data.enableVariantPrices),
-									},
-								},
-							],
-						},
-						{
-							name: 'relatedProducts',
-							type: 'relationship',
-							filterOptions: ({ id }) => {
-								if (id) {
-									return {
-										id: {
-											not_in: [id],
-										},
-									};
-								}
-
-								// ID comes back as undefined during seeding so we need to handle that case
-								return {
-									id: {
-										exists: true,
-									},
-								};
-							},
-							hasMany: true,
-							relationTo: 'products',
-						},
-					],
-				},
+				// {
+				// 	label: 'Opciones de Variantes',
+				// 	fields: [
+				// 		{
+				// 			type: 'row',
+				// 			fields: [
+				// 				{
+				// 					label: 'Habilitar Variantes',
+				// 					name: 'enableVariants',
+				// 					type: 'checkbox',
+				// 					admin: {
+				// 						width: 'fit-content',
+				// 					},
+				// 				},
+				// 				{
+				// 					label: 'Variantes tienen diferentes precios',
+				// 					name: 'enableVariantPrices',
+				// 					type: 'checkbox',
+				// 					admin: {
+				// 						description:
+				// 							'Si es falso, el precio esta en los detalles del producto',
+				// 						width: 'fit-content',
+				// 						style: {
+				// 							marginLeft: '2rem',
+				// 						},
+				// 					},
+				// 				},
+				// 			],
+				// 		},
+				// 		{
+				// 			name: 'variants',
+				// 			type: 'relationship',
+				// 			relationTo: 'variants',
+				// 			hasMany: true,
+				// 			admin: {
+				// 				condition: (_, siblingData) =>
+				// 					Boolean(siblingData.enableVariants),
+				// 			},
+				// 		},
+				// 		{
+				// 			name: 'relatedProducts',
+				// 			type: 'relationship',
+				// 			filterOptions: ({ id }) => {
+				// 				if (id) {
+				// 					return {
+				// 						id: {
+				// 							not_in: [id],
+				// 						},
+				// 					};
+				// 				}
+				//
+				// 				// ID comes back as undefined during seeding so we need to handle that case
+				// 				return {
+				// 					id: {
+				// 						exists: true,
+				// 					},
+				// 				};
+				// 			},
+				// 			hasMany: true,
+				// 			relationTo: 'products',
+				// 		},
+				// 	],
+				// },
 				{
 					name: 'meta',
 					label: 'SEO',
@@ -284,6 +214,16 @@ export const ProductsCollection: CollectionOverride = () => ({
 			relationTo: 'categories',
 		},
 		{
+			name: 'sub-categories',
+			type: 'relationship',
+			admin: {
+				position: 'sidebar',
+				sortOptions: 'title',
+			},
+			hasMany: true,
+			relationTo: 'sub-categories',
+		},
+		{
 			name: 'totalAvailableStock',
 			type: 'number',
 			admin: {
@@ -292,26 +232,33 @@ export const ProductsCollection: CollectionOverride = () => ({
 				description: 'Sum of all active batch quantities',
 			},
 			hooks: {
-				afterRead: [
-					async ({ req, data }) => {
-						if (!data?.id) {
-							return 0;
-						}
-
-						const batches = await req.payload.find({
-							collection: 'inventory-batches',
-							where: {
-								product: { equals: data.id },
-								status: { equals: 'active' },
-							},
-						});
-
-						return batches.docs.reduce(
-							(sum, batch) => sum + (batch.quantity || 0),
-							0
-						);
-					},
-				],
+				// afterRead: [
+				// 	async ({ req, data }) => {
+				// 		if (!data?.id) {
+				// 			return 0;
+				// 		}
+				//
+				// 		const batches = await req.payload.find({
+				// 			collection: 'inventory-batches',
+				// 			where: {
+				// 				and: [
+				// 					{
+				// 						or: [
+				// 							{ product: { equals: data.id } },
+				// 							{ variant: { exists: true } },
+				// 						],
+				// 					},
+				// 					{ status: { equals: 'active' } },
+				// 				],
+				// 			},
+				// 		});
+				//
+				// 		return batches.docs.reduce(
+				// 			(sum, batch) => sum + (batch.quantity || 0),
+				// 			0
+				// 		);
+				// 	},
+				// ],
 			},
 		},
 		slugField(),
