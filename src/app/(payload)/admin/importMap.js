@@ -31,6 +31,9 @@ import { SlugField as SlugField_3817bf644402e67bfe6577f60ef982de } from '@payloa
 import { VariantOptionsSelector as VariantOptionsSelector_b91672ccd6e8b071c11142ab941fedfb } from '@payloadcms/plugin-ecommerce/rsc'
 import { PriceCell as PriceCell_e27bf7b8cc50640dcdd584767b8eac3c } from '@payloadcms/plugin-ecommerce/client'
 import { PriceInput as PriceInput_b91672ccd6e8b071c11142ab941fedfb } from '@payloadcms/plugin-ecommerce/rsc'
+import { Icon as Icon_f8022cf35b3d492829ec1a405bd134e9 } from '@/components/icon'
+import { BigLogo as BigLogo_2321de5ae370772b95582a0fdbb5b78c } from '@/components/big-logo'
+import { CustomDashboard as CustomDashboard_1f14d5459dbb04f6cfb14a7464af214c } from '@/components/custom-dashboard'
 import { CollectionCards as CollectionCards_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
 
 export const importMap = {
@@ -67,5 +70,8 @@ export const importMap = {
   "@payloadcms/plugin-ecommerce/rsc#VariantOptionsSelector": VariantOptionsSelector_b91672ccd6e8b071c11142ab941fedfb,
   "@payloadcms/plugin-ecommerce/client#PriceCell": PriceCell_e27bf7b8cc50640dcdd584767b8eac3c,
   "@payloadcms/plugin-ecommerce/rsc#PriceInput": PriceInput_b91672ccd6e8b071c11142ab941fedfb,
+  "@/components/icon#Icon": Icon_f8022cf35b3d492829ec1a405bd134e9,
+  "@/components/big-logo#BigLogo": BigLogo_2321de5ae370772b95582a0fdbb5b78c,
+  "@/components/custom-dashboard#CustomDashboard": CustomDashboard_1f14d5459dbb04f6cfb14a7464af214c,
   "@payloadcms/ui/rsc#CollectionCards": CollectionCards_ab83ff7e88da8d3530831f296ec4756a
 }

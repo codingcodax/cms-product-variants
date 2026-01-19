@@ -75,12 +75,9 @@ export interface Config {
     users: User;
     media: Media;
     pages: Page;
-    'custom-variant-types': CustomVariantType;
-    'custom-variant-options': CustomVariantOption;
-    'custom-product-variants': CustomProductVariant;
-    'inventory-batches': InventoryBatch;
     categories: Category;
     'sub-categories': SubCategory;
+    'inventory-batches': InventoryBatch;
     forms: Form;
     'form-submissions': FormSubmission;
     addresses: Address;
@@ -117,12 +114,9 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
-    'custom-variant-types': CustomVariantTypesSelect<false> | CustomVariantTypesSelect<true>;
-    'custom-variant-options': CustomVariantOptionsSelect<false> | CustomVariantOptionsSelect<true>;
-    'custom-product-variants': CustomProductVariantsSelect<false> | CustomProductVariantsSelect<true>;
-    'inventory-batches': InventoryBatchesSelect<false> | InventoryBatchesSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     'sub-categories': SubCategoriesSelect<false> | SubCategoriesSelect<true>;
+    'inventory-batches': InventoryBatchesSelect<false> | InventoryBatchesSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
     addresses: AddressesSelect<false> | AddressesSelect<true>;
@@ -265,8 +259,6 @@ export interface Order {
   createdAt: string;
 }
 /**
- * Tus productos
- *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "products".
  */
@@ -288,6 +280,13 @@ export interface Product {
     };
     [k: string]: unknown;
   } | null;
+  gallery?:
+    | {
+        image: number | Media;
+        id?: string | null;
+      }[]
+    | null;
+  relatedProducts?: (number | Product)[] | null;
   meta?: {
     title?: string | null;
     /**
@@ -296,12 +295,9 @@ export interface Product {
     image?: (number | null) | Media;
     description?: string | null;
   };
-  hasVariants?: string | null;
   categories?: (number | Category)[] | null;
   'sub-categories'?: (number | SubCategory)[] | null;
-  /**
-   * Sum of all active batch quantities
-   */
+  price: number;
   totalAvailableStock?: number | null;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
@@ -311,6 +307,7 @@ export interface Product {
   updatedAt: string;
   createdAt: string;
   deletedAt?: string | null;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1026,58 +1023,17 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "custom-variant-types".
- */
-export interface CustomVariantType {
-  id: number;
-  label?: string | null;
-  description?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "custom-variant-options".
- */
-export interface CustomVariantOption {
-  id: number;
-  value: string;
-  'variant-type': number | CustomVariantType;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "custom-product-variants".
- */
-export interface CustomProductVariant {
-  id: number;
-  product: number | Product;
-  price: number;
-  /**
-   * When enabled, the slug will auto-generate from the title field on save and autosave.
-   */
-  generateSlug?: boolean | null;
-  slug: string;
-  'variant-type': number | CustomVariantType;
-  'variant-option': number | CustomVariantOption;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "inventory-batches".
  */
 export interface InventoryBatch {
   id: number;
   batchNumber: string;
   product?: (number | null) | Product;
-  variant?: (number | null) | CustomProductVariant;
   quantity: number;
-  status?: ('active' | 'depleted' | 'expired' | 'reserved' | 'recalled') | null;
   expiryDate?: string | null;
   manufactureDate?: string | null;
   receivedDate: string;
+  status?: ('active' | 'depleted' | 'expired' | 'reserved' | 'recalled') | null;
   supplier?: string | null;
   notes?: string | null;
   updatedAt: string;
@@ -1137,28 +1093,16 @@ export interface PayloadLockedDocument {
         value: number | Page;
       } | null)
     | ({
-        relationTo: 'custom-variant-types';
-        value: number | CustomVariantType;
-      } | null)
-    | ({
-        relationTo: 'custom-variant-options';
-        value: number | CustomVariantOption;
-      } | null)
-    | ({
-        relationTo: 'custom-product-variants';
-        value: number | CustomProductVariant;
-      } | null)
-    | ({
-        relationTo: 'inventory-batches';
-        value: number | InventoryBatch;
-      } | null)
-    | ({
         relationTo: 'categories';
         value: number | Category;
       } | null)
     | ({
         relationTo: 'sub-categories';
         value: number | SubCategory;
+      } | null)
+    | ({
+        relationTo: 'inventory-batches';
+        value: number | InventoryBatch;
       } | null)
     | ({
         relationTo: 'forms';
@@ -1461,58 +1405,6 @@ export interface FormBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "custom-variant-types_select".
- */
-export interface CustomVariantTypesSelect<T extends boolean = true> {
-  label?: T;
-  description?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "custom-variant-options_select".
- */
-export interface CustomVariantOptionsSelect<T extends boolean = true> {
-  value?: T;
-  'variant-type'?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "custom-product-variants_select".
- */
-export interface CustomProductVariantsSelect<T extends boolean = true> {
-  product?: T;
-  price?: T;
-  generateSlug?: T;
-  slug?: T;
-  'variant-type'?: T;
-  'variant-option'?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "inventory-batches_select".
- */
-export interface InventoryBatchesSelect<T extends boolean = true> {
-  batchNumber?: T;
-  product?: T;
-  variant?: T;
-  quantity?: T;
-  status?: T;
-  expiryDate?: T;
-  manufactureDate?: T;
-  receivedDate?: T;
-  supplier?: T;
-  notes?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "categories_select".
  */
 export interface CategoriesSelect<T extends boolean = true> {
@@ -1534,6 +1426,23 @@ export interface SubCategoriesSelect<T extends boolean = true> {
   products?: T;
   generateSlug?: T;
   slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "inventory-batches_select".
+ */
+export interface InventoryBatchesSelect<T extends boolean = true> {
+  batchNumber?: T;
+  product?: T;
+  quantity?: T;
+  expiryDate?: T;
+  manufactureDate?: T;
+  receivedDate?: T;
+  status?: T;
+  supplier?: T;
+  notes?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1754,6 +1663,13 @@ export interface VariantOptionsSelect<T extends boolean = true> {
 export interface ProductsSelect<T extends boolean = true> {
   title?: T;
   description?: T;
+  gallery?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  relatedProducts?: T;
   meta?:
     | T
     | {
@@ -1761,15 +1677,16 @@ export interface ProductsSelect<T extends boolean = true> {
         image?: T;
         description?: T;
       };
-  hasVariants?: T;
   categories?: T;
   'sub-categories'?: T;
+  price?: T;
   totalAvailableStock?: T;
   generateSlug?: T;
   slug?: T;
   updatedAt?: T;
   createdAt?: T;
   deletedAt?: T;
+  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
