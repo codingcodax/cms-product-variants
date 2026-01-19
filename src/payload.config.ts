@@ -5,11 +5,7 @@ import { ecommercePlugin } from '@payloadcms/plugin-ecommerce';
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder';
 import { seoPlugin } from '@payloadcms/plugin-seo';
 import type { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types';
-import {
-	FixedToolbarFeature,
-	HeadingFeature,
-	lexicalEditor,
-} from '@payloadcms/richtext-lexical';
+import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import { es } from '@payloadcms/translations/languages/es';
 import { buildConfig } from 'payload';
 import sharp from 'sharp';
@@ -21,18 +17,15 @@ import { isAdmin } from './access/is-admin';
 import { isDocumentOwner } from './access/is-document-owner';
 import { CartsCollection } from './collections/carts';
 import { Categories } from './collections/categories';
-import { InventoryBatches } from './collections/inventory-batches';
 import { Media } from './collections/media/media';
 import { OrdersCollection } from './collections/orders/orders';
 import { Pages } from './collections/pages/pages';
-import { ProductsCollection } from './collections/products/products';
+import { ProductsCollection } from './collections/products';
 import { SubCategories } from './collections/sub-categories';
 import { TransactionsCollection } from './collections/transactions';
 import { Users } from './collections/users/users';
-import { VariantOptions } from './collections/variant-options';
-import { VariantTypes } from './collections/variant-types';
-import { Variants } from './collections/variants';
 import { getServerSideURL } from './lib/get-url';
+import { InventoryBatches } from './collections/inventory-batches';
 
 const generateTitle: GenerateTitle<Product | Page> = ({ doc }) => {
 	return doc?.title
@@ -56,6 +49,17 @@ export default buildConfig({
 		importMap: {
 			baseDir: path.resolve(dirname),
 		},
+		components: {
+			graphics: {
+				Logo: '@/components/big-logo#BigLogo',
+				Icon: '@/components/icon#Icon',
+			},
+			views: {
+				dashboard: {
+					Component: '@/components/custom-dashboard#CustomDashboard',
+				},
+			},
+		},
 	},
 	i18n: {
 		fallbackLanguage: 'es',
@@ -65,12 +69,9 @@ export default buildConfig({
 		Users,
 		Media,
 		Pages,
-		VariantTypes,
-		VariantOptions,
-		Variants,
-		InventoryBatches,
 		Categories,
 		SubCategories,
+		InventoryBatches,
 	],
 	editor: lexicalEditor(),
 	secret: process.env.PAYLOAD_SECRET || '',
@@ -106,17 +107,7 @@ export default buildConfig({
 						if ('name' in field && field.name === 'confirmationMessage') {
 							return {
 								...field,
-								editor: lexicalEditor({
-									features: ({ rootFeatures }) => {
-										return [
-											...rootFeatures,
-											FixedToolbarFeature(),
-											HeadingFeature({
-												enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'],
-											}),
-										];
-									},
-								}),
+								editor: lexicalEditor(),
 							};
 						}
 						return field;
