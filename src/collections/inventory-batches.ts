@@ -1,18 +1,10 @@
 import type { CollectionConfig } from 'payload';
-import { adminOrSelf } from '@/access/admin-or-self';
-import { publicAccess } from '@/access/public-access';
 
 export const InventoryBatches: CollectionConfig = {
 	slug: 'inventory-batches',
 	labels: {
 		singular: 'Lote de Inventario',
 		plural: 'Lotes de Inventario',
-	},
-	access: {
-		create: adminOrSelf,
-		delete: adminOrSelf,
-		read: publicAccess,
-		update: adminOrSelf,
 	},
 	admin: {
 		useAsTitle: 'batchNumber',
@@ -28,6 +20,7 @@ export const InventoryBatches: CollectionConfig = {
 	},
 	fields: [
 		{
+			label: 'Numbero de Inventario',
 			name: 'batchNumber',
 			type: 'text',
 			required: true,
@@ -35,85 +28,65 @@ export const InventoryBatches: CollectionConfig = {
 			index: true,
 		},
 		{
-			type: 'row',
-			fields: [
-				{
-					name: 'product',
-					type: 'relationship',
-					relationTo: 'products',
-					required: false,
-					index: true,
-					admin: {
-						condition: (data) => !data?.variant,
-					},
-				},
-				{
-					name: 'variant',
-					type: 'relationship',
-					relationTo: 'custom-product-variants',
-					required: false,
-					index: true,
-					admin: {
-						condition: (data) => !data?.product,
-					},
-				},
-			],
+			label: 'Producto',
+			name: 'product',
+			type: 'relationship',
+			relationTo: 'products',
+			required: false,
+			index: true,
 		},
 		{
-			type: 'row',
-			fields: [
-				{
-					name: 'quantity',
-					type: 'number',
-					required: true,
-					min: 0,
-					defaultValue: 0,
-				},
-				{
-					name: 'status',
-					type: 'select',
-					options: [
-						{ label: 'Active', value: 'active' },
-						{ label: 'Depleted', value: 'depleted' },
-						{ label: 'Expired', value: 'expired' },
-						{ label: 'Reserved', value: 'reserved' },
-						{ label: 'Recalled', value: 'recalled' },
-					],
-					defaultValue: 'active',
-					index: true,
-				},
-			],
+			label: 'Unidades',
+			name: 'quantity',
+			type: 'number',
+			required: true,
+			min: 0,
+			defaultValue: 0,
 		},
 		{
-			type: 'row',
-			fields: [
-				{
-					name: 'expiryDate',
-					type: 'date',
-					admin: {
-						date: {
-							pickerAppearance: 'dayAndTime',
-							displayFormat: 'MMM dd, yyyy',
-						},
-					},
+			label: 'Fecha de Expiracion',
+			name: 'expiryDate',
+			type: 'date',
+			admin: {
+				date: {
+					pickerAppearance: 'dayAndTime',
+					displayFormat: 'MMM dd, yyyy',
 				},
-				{
-					name: 'manufactureDate',
-					type: 'date',
-				},
-				{
-					name: 'receivedDate',
-					type: 'date',
-					required: true,
-					defaultValue: () => new Date().toISOString(),
-				},
-			],
+			},
 		},
 		{
+			label: 'Fecha de Fabricacion',
+			name: 'manufactureDate',
+			type: 'date',
+		},
+		{
+			label: 'Fecha de Recepcion',
+			name: 'receivedDate',
+			type: 'date',
+			required: true,
+			defaultValue: () => new Date().toISOString(),
+		},
+		{
+			label: 'Estado',
+			name: 'status',
+			type: 'select',
+			options: [
+				{ label: 'Active', value: 'active' },
+				{ label: 'Depleted', value: 'depleted' },
+				{ label: 'Expired', value: 'expired' },
+				{ label: 'Reserved', value: 'reserved' },
+				{ label: 'Recalled', value: 'recalled' },
+			],
+			defaultValue: 'active',
+			index: true,
+		},
+		{
+			label: 'Proveedor',
 			name: 'supplier',
 			type: 'text',
 		},
 		{
+			label: 'Notas',
 			name: 'notes',
 			type: 'textarea',
 		},
