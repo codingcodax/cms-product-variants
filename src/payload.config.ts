@@ -17,6 +17,7 @@ import { isAdmin } from './access/is-admin';
 import { isDocumentOwner } from './access/is-document-owner';
 import { CartsCollection } from './collections/carts';
 import { Categories } from './collections/categories';
+import { InventoryBatches } from './collections/inventory-batches';
 import { Media } from './collections/media/media';
 import { OrdersCollection } from './collections/orders/orders';
 import { Pages } from './collections/pages/pages';
@@ -25,7 +26,6 @@ import { SubCategories } from './collections/sub-categories';
 import { TransactionsCollection } from './collections/transactions';
 import { Users } from './collections/users/users';
 import { getServerSideURL } from './lib/get-url';
-import { InventoryBatches } from './collections/inventory-batches';
 
 const generateTitle: GenerateTitle<Product | Page> = ({ doc }) => {
 	return doc?.title
@@ -49,16 +49,49 @@ export default buildConfig({
 		importMap: {
 			baseDir: path.resolve(dirname),
 		},
+		dashboard: {
+			widgets: [
+				{
+					slug: 'widget-1',
+					ComponentPath: '@/components/widget-1#Widget1',
+					minWidth: 'medium',
+					maxWidth: 'large',
+				},
+				{
+					slug: 'widget-2',
+					ComponentPath: '@/components/widget-2#Widget2',
+					minWidth: 'x-small',
+					maxWidth: 'medium',
+				},
+				{
+					slug: 'widget-3',
+					ComponentPath: '@/components/widget-3#Widget3',
+					minWidth: 'small',
+					maxWidth: 'medium',
+				},
+				{
+					slug: 'widget-4',
+					ComponentPath: '@/components/widget-4#Widget4',
+					minWidth: 'large',
+					maxWidth: 'full',
+				},
+			],
+		},
 		components: {
 			graphics: {
 				Logo: '@/components/big-logo#BigLogo',
 				Icon: '@/components/icon#Icon',
 			},
 			views: {
-				dashboard: {
-					Component: '@/components/custom-dashboard#CustomDashboard',
+				// dashboard: {
+				// 	Component: '@/components/custom-dashboard#CustomDashboard',
+				// },
+				back: {
+					Component: '@/components/backoffice-1#Backoffice1',
+					path: '/back-1',
 				},
 			},
+			afterNavLinks: ['@/components/after-navs-links#AfterNavsLinks'],
 		},
 	},
 	i18n: {
@@ -152,4 +185,7 @@ export default buildConfig({
 			},
 		}),
 	],
+	// routes: {
+	// 	admin: '/cms',
+	// },
 });
