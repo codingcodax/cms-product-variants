@@ -50,29 +50,44 @@ export default buildConfig({
 			baseDir: path.resolve(dirname),
 		},
 		dashboard: {
+			defaultLayout: () => {
+				return [
+					{ widgetSlug: 'widget-1', width: 'x-small' },
+					{ widgetSlug: 'widget-2', width: 'x-small' },
+					{ widgetSlug: 'widget-3', width: 'x-small' },
+					{ widgetSlug: 'widget-4', width: 'x-small' },
+					{ widgetSlug: 'widget-5', width: 'full' },
+				];
+			},
 			widgets: [
 				{
 					slug: 'widget-1',
 					ComponentPath: '@/components/widget-1#Widget1',
-					minWidth: 'medium',
-					maxWidth: 'large',
+					minWidth: 'x-small',
+					maxWidth: 'small',
 				},
 				{
 					slug: 'widget-2',
 					ComponentPath: '@/components/widget-2#Widget2',
 					minWidth: 'x-small',
-					maxWidth: 'medium',
+					maxWidth: 'small',
 				},
 				{
 					slug: 'widget-3',
 					ComponentPath: '@/components/widget-3#Widget3',
-					minWidth: 'small',
-					maxWidth: 'medium',
+					minWidth: 'x-small',
+					maxWidth: 'small',
 				},
 				{
 					slug: 'widget-4',
 					ComponentPath: '@/components/widget-4#Widget4',
-					minWidth: 'large',
+					minWidth: 'x-small',
+					maxWidth: 'small',
+				},
+				{
+					slug: 'widget-5',
+					ComponentPath: '@/components/widget-5#Widget5',
+					minWidth: 'full',
 					maxWidth: 'full',
 				},
 			],
