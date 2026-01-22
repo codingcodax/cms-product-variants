@@ -39,6 +39,7 @@ import { Widget1 as Widget1_a1abaaea921c1abc3e786e0007a8c5f5 } from '@/component
 import { Widget2 as Widget2_5c856b056750f2e837625b6f0b955e64 } from '@/components/widget-2'
 import { Widget3 as Widget3_d09908cd562363fce59db79f91433759 } from '@/components/widget-3'
 import { Widget4 as Widget4_bb45ce2725f46f36596523d411034218 } from '@/components/widget-4'
+import { Widget5 as Widget5_d591cff25aad5b17f99b2af70f79e7f2 } from '@/components/widget-5'
 import { CollectionCards as CollectionCards_ab83ff7e88da8d3530831f296ec4756a } from '@payloadcms/ui/rsc'
 
 export const importMap = {
@@ -83,5 +84,6 @@ export const importMap = {
   "@/components/widget-2#Widget2": Widget2_5c856b056750f2e837625b6f0b955e64,
   "@/components/widget-3#Widget3": Widget3_d09908cd562363fce59db79f91433759,
   "@/components/widget-4#Widget4": Widget4_bb45ce2725f46f36596523d411034218,
+  "@/components/widget-5#Widget5": Widget5_d591cff25aad5b17f99b2af70f79e7f2,
   "@payloadcms/ui/rsc#CollectionCards": CollectionCards_ab83ff7e88da8d3530831f296ec4756a
 }
