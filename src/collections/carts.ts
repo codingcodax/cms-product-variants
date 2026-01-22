@@ -8,5 +8,9 @@ export const CartsCollection: CollectionOverride = ({ defaultCollection }) => ({
 	},
 	admin: {
 		...defaultCollection?.admin,
+		hidden: ({ user }) => !user?.roles?.includes('admin'),
+	},
+	access: {
+		admin: ({ req: { user } }) => user?.roles?.includes('admin') ?? false,
 	},
 });

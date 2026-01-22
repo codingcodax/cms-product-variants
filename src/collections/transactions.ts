@@ -10,5 +10,9 @@ export const TransactionsCollection: CollectionOverride = ({
 	},
 	admin: {
 		...defaultCollection?.admin,
+		hidden: ({ user }) => !user?.roles?.includes('admin'),
+	},
+	access: {
+		admin: ({ req: { user } }) => user?.roles?.includes('admin') ?? false,
 	},
 });

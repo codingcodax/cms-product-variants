@@ -11,6 +11,7 @@ export const OrdersCollection: CollectionOverride = ({
 	},
 	admin: {
 		...defaultCollection?.admin,
+		hidden: ({ user }) => !user?.roles?.includes('admin'),
 	},
 	hooks: {
 		afterChange: [reserveInventoryOnOrder],
