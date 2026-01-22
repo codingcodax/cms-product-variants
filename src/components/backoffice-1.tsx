@@ -1,5 +1,6 @@
 import { DefaultTemplate } from '@payloadcms/next/templates';
 import { Gutter } from '@payloadcms/ui';
+import { redirect } from 'next/navigation';
 import type { AdminViewServerProps } from 'payload';
 
 export const Backoffice1 = ({
@@ -7,6 +8,10 @@ export const Backoffice1 = ({
 	params,
 	searchParams,
 }: AdminViewServerProps) => {
+	if (!initPageResult.req.user?.roles?.includes('admin')) {
+		return redirect('/admin');
+	}
+
 	return (
 		<DefaultTemplate
 			i18n={initPageResult.req.i18n}
